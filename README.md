@@ -1,1 +1,1 @@
-https://zryadj.github.io/app/
+https://zryadj.github.io/todo-list/
