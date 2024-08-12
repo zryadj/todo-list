@@ -1,355 +1,355 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TODO LIST</title>
     <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        height: 100vh;
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-      }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
 
-      h1 {
-        margin-bottom: 20px;
-      }
+        h1 {
+            margin-bottom: 20px;
+        }
 
-      #todo-list {
-        width: 90%;
-        max-width: 400px;
-      }
+        #todo-list {
+            width: 90%;
+            max-width: 400px;
+        }
 
-      #new-task {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-      }
+        #new-task {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
 
-      #delete-selected {
-        width: 90%;
-        padding: 10px;
-        font-size: 16px;
-        background-color: #e74c3c;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        position: fixed;
-        bottom: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: none;
-        max-width: 400px;
-      }
+        #delete-selected {
+            width: 90%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            max-width: 400px;
+        }
 
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
 
-      ul li {
-        background-color: #fff;
-        margin-bottom: 10px;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 4px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-      }
+        ul li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
 
-      .task-info {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
+        .task-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
 
-      .timestamp {
-        font-size: 10px;
-        color: #888;
-        margin-top: 5px;
-        align-self: flex-start;
-      }
+        .timestamp {
+            font-size: 10px;
+            color: #888;
+            margin-top: 5px;
+            align-self: flex-start;
+        }
 
-      .delete {
-        background-color: #e74c3c;
-        border: none;
-        color: white;
-        padding: 10px;
-        border-radius: 4px;
-        cursor: pointer;
-        position: absolute;
-        right: -50%;
-        top: 0;
-        bottom: 0;
-        width: 50%;
-        transition: right 0.3s ease;
-        text-align: center;
-      }
+        .delete {
+            background-color: #e74c3c;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            position: absolute;
+            right: -50%;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            transition: right 0.3s ease;
+            text-align: center;
+        }
 
-      .delete:hover {
-        background-color: #c0392b;
-      }
+        .delete:hover {
+            background-color: #c0392b;
+        }
 
-      li.show-delete .delete {
-        right: 0;
-      }
+        li.show-delete .delete {
+            right: 0;
+        }
 
-      .task-checkbox {
-        margin-right: 10px;
-      }
+        .task-checkbox {
+            margin-right: 10px;
+        }
 
-      .reminder-button {
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 10px;
-        position: relative;
-      }
+        .reminder-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            position: relative;
+        }
 
-      .reminder-button img {
-        width: 20px;
-        height: 20px;
-      }
+        .reminder-button img {
+            width: 20px;
+            height: 20px;
+        }
 
-      .reminder-button.active img {
-        filter: hue-rotate(120deg); /* 改变图标颜色，表示已设置 */
-      }
+        .reminder-button.active img {
+            filter: hue-rotate(120deg); /* 改变图标颜色，表示已设置 */
+        }
 
-      .reminder-time {
-        font-size: 10px;
-        color: #888;
-      }
+        .reminder-time {
+            font-size: 10px;
+            color: #888;
+        }
     </style>
     <!-- 引入 Flatpickr CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
-  </head>
-  <body>
+</head>
+<body>
     <h1>TODO LIST</h1>
     <div id="todo-list">
-      <input type="text" id="new-task" placeholder="添加一个计划..." />
-      <ul id="tasks"></ul>
+        <input type="text" id="new-task" placeholder="添加一个计划..." />
+        <ul id="tasks"></ul>
     </div>
     <button id="delete-selected">删除选中任务</button>
 
     <!-- 引入 Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", (event) => {
-        const taskInput = document.getElementById("new-task");
-        const tasksList = document.getElementById("tasks");
-        const deleteSelectedButton = document.getElementById("delete-selected");
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const taskInput = document.getElementById("new-task");
+            const tasksList = document.getElementById("tasks");
+            const deleteSelectedButton = document.getElementById("delete-selected");
 
-        // 从 localStorage 加载任务列表
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            // 从 localStorage 加载任务列表
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-        const saveTasks = () => {
-          localStorage.setItem("tasks", JSON.stringify(tasks));
-        };
+            const saveTasks = () => {
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+            };
 
-        const renderTasks = () => {
-          tasksList.innerHTML = "";
-          let selectedCount = 0;
+            const renderTasks = () => {
+                tasksList.innerHTML = "";
+                let selectedCount = 0;
 
-          tasks.forEach((task, index) => {
-            const li = document.createElement("li");
+                tasks.forEach((task, index) => {
+                    const li = document.createElement("li");
 
-            const taskInfoDiv = document.createElement("div");
-            taskInfoDiv.className = "task-info";
+                    const taskInfoDiv = document.createElement("div");
+                    taskInfoDiv.className = "task-info";
 
-            const taskNameDiv = document.createElement("div");
-            taskNameDiv.textContent = task.name;
-            taskNameDiv.style.cursor = "pointer";
+                    const taskNameDiv = document.createElement("div");
+                    taskNameDiv.textContent = task.name;
+                    taskNameDiv.style.cursor = "pointer";
 
-            taskNameDiv.addEventListener("click", () => {
-              const input = document.createElement("input");
-              input.type = "text";
-              input.value = task.name;
+                    taskNameDiv.addEventListener("click", () => {
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.value = task.name;
 
-              taskNameDiv.replaceWith(input);
-              input.focus();
+                        taskNameDiv.replaceWith(input);
+                        input.focus();
 
-              const saveEdit = () => {
-                const newValue = input.value.trim();
-                if (newValue === "") {
-                  tasks.splice(index, 1);
+                        const saveEdit = () => {
+                            const newValue = input.value.trim();
+                            if (newValue === "") {
+                                tasks.splice(index, 1);
+                            } else {
+                                task.name = newValue;
+                            }
+                            saveTasks();
+                            renderTasks();
+                        };
+
+                        input.addEventListener("keypress", (e) => {
+                            if (e.key === "Enter") {
+                                saveEdit();
+                            }
+                        });
+
+                        input.addEventListener("blur", saveEdit);
+                    });
+
+                    const timestamp = document.createElement("span");
+                    timestamp.className = "timestamp";
+                    timestamp.textContent = task.time;
+                    taskInfoDiv.appendChild(taskNameDiv);
+                    taskInfoDiv.appendChild(timestamp);
+
+                    const reminderButton = document.createElement("button");
+                    reminderButton.className = "reminder-button";
+                    reminderButton.innerHTML = `<img src="https://img.icons8.com/material-outlined/24/000000/alarm.png" alt="提醒">`;
+                    if (task.reminderTime) {
+                        reminderButton.classList.add("active");
+                    }
+
+                    reminderButton.onclick = () => {
+                        const picker = flatpickr(reminderButton, {
+                            enableTime: true,
+                            dateFormat: "Y-m-d H:i",
+                            defaultDate: task.reminderTime || new Date(),
+                            onClose: (selectedDates) => {
+                                if (selectedDates.length > 0) {
+                                    task.reminderTime = selectedDates[0].toISOString();
+                                    reminderButton.classList.add("active");
+                                    saveTasks();
+                                    renderTasks();
+                                }
+                            },
+                        });
+                        picker.open();
+                    };
+
+                    const reminderTimeText = document.createElement("span");
+                    reminderTimeText.className = "reminder-time";
+                    if (task.reminderTime) {
+                        reminderTimeText.textContent = new Date(
+                            task.reminderTime
+                        ).toLocaleString();
+                    }
+                    taskInfoDiv.appendChild(reminderTimeText);
+
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "删除";
+                    deleteButton.className = "delete";
+                    deleteButton.onclick = () => {
+                        tasks.splice(index, 1);
+                        saveTasks();
+                        renderTasks();
+                    };
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.className = "task-checkbox";
+                    checkbox.checked = task.selected;
+                    checkbox.onclick = (e) => {
+                        task.selected = e.target.checked;
+                        renderTasks();
+                    };
+
+                    if (task.selected) {
+                        selectedCount++;
+                    }
+
+                    li.appendChild(checkbox);
+                    li.appendChild(taskInfoDiv);
+                    li.appendChild(reminderButton);
+                    li.appendChild(deleteButton);
+                    tasksList.appendChild(li);
+
+                    let startX;
+
+                    li.addEventListener("touchstart", (e) => {
+                        startX = e.touches[0].clientX;
+                    });
+
+                    li.addEventListener("touchmove", (e) => {
+                        const moveX = e.touches[0].clientX;
+                        const diffX = startX - moveX;
+
+                        if (diffX > 50) {
+                            li.classList.add("show-delete");
+                        } else {
+                            li.classList.remove("show-delete");
+                        }
+                    });
+                });
+
+                if (selectedCount > 0) {
+                    deleteSelectedButton.style.display = "block";
                 } else {
-                  task.name = newValue;
+                    deleteSelectedButton.style.display = "none";
                 }
-                saveTasks();
-                renderTasks();
-              };
+            };
 
-              input.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") {
-                  saveEdit();
-                }
-              });
-
-              input.addEventListener("blur", saveEdit);
-            });
-
-            const timestamp = document.createElement("span");
-            timestamp.className = "timestamp";
-            timestamp.textContent = task.time;
-            taskInfoDiv.appendChild(taskNameDiv);
-            taskInfoDiv.appendChild(timestamp);
-
-            const reminderButton = document.createElement("button");
-            reminderButton.className = "reminder-button";
-            reminderButton.innerHTML = `<img src="https://img.icons8.com/material-outlined/24/000000/alarm.png" alt="提醒">`;
-            if (task.reminderTime) {
-              reminderButton.classList.add("active");
-            }
-
-            reminderButton.onclick = () => {
-              // 创建时间选择器
-              const picker = flatpickr(reminderButton, {
-                enableTime: true,
-                dateFormat: "Y-m-d H:i",
-                defaultDate: task.reminderTime || new Date(),
-                onClose: (selectedDates) => {
-                  if (selectedDates.length > 0) {
-                    task.reminderTime = selectedDates[0].toISOString();
-                    reminderButton.classList.add("active");
+            taskInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter" && taskInput.value.trim() !== "") {
+                    const newTask = {
+                        name: taskInput.value.trim(),
+                        time: new Date().toLocaleString(),
+                        selected: false,
+                        reminderTime: "",
+                    };
+                    tasks.push(newTask);
+                    taskInput.value = "";
                     saveTasks();
                     renderTasks();
-                  }
-                },
-              });
-              picker.open();
-            };
-
-            const reminderTimeText = document.createElement("span");
-            reminderTimeText.className = "reminder-time";
-            if (task.reminderTime) {
-              reminderTimeText.textContent = new Date(
-                task.reminderTime
-              ).toLocaleString();
-            }
-            taskInfoDiv.appendChild(reminderTimeText);
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "删除";
-            deleteButton.className = "delete";
-            deleteButton.onclick = () => {
-              tasks.splice(index, 1);
-              saveTasks();
-              renderTasks();
-            };
-
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.className = "task-checkbox";
-            checkbox.checked = task.selected;
-            checkbox.onclick = (e) => {
-              task.selected = e.target.checked;
-              renderTasks();
-            };
-
-            if (task.selected) {
-              selectedCount++;
-            }
-
-            li.appendChild(checkbox);
-            li.appendChild(taskInfoDiv);
-            li.appendChild(reminderButton);
-            li.appendChild(deleteButton);
-            tasksList.appendChild(li);
-
-            let startX;
-
-            li.addEventListener("touchstart", (e) => {
-              startX = e.touches[0].clientX;
+                }
             });
 
-            li.addEventListener("touchmove", (e) => {
-              const moveX = e.touches[0].clientX;
-              const diffX = startX - moveX;
-
-              if (diffX > 50) {
-                li.classList.add("show-delete");
-              } else {
-                li.classList.remove("show-delete");
-              }
+            deleteSelectedButton.addEventListener("click", () => {
+                const remainingTasks = tasks.filter((task) => !task.selected);
+                tasks.length = 0;
+                tasks.push(...remainingTasks);
+                saveTasks();
+                renderTasks();
             });
-          });
 
-          if (selectedCount > 0) {
-            deleteSelectedButton.style.display = "block";
-          } else {
-            deleteSelectedButton.style.display = "none";
-          }
-        };
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
 
-        taskInput.addEventListener("keypress", (e) => {
-          if (e.key === "Enter" && taskInput.value.trim() !== "") {
-            const newTask = {
-              name: taskInput.value.trim(),
-              time: new Date().toLocaleString(),
-              selected: false,
-              reminderTime: "",
-            };
-            tasks.push(newTask);
-            taskInput.value = "";
-            saveTasks();
-            renderTasks();
-          }
-        });
+            setInterval(() => {
+                const now = new Date();
+                tasks.forEach((task) => {
+                    if (task.reminderTime && new Date(task.reminderTime) <= now) {
+                        alert(`提醒: ${task.name}`);
+                        if ("Notification" in window && navigator.serviceWorker) {
+                            alert(`提醒: ${task.name}`);
+                            navigator.serviceWorker.getRegistration().then(function (reg) {
+                                reg.showNotification(`提醒: ${task.name}`, {
+                                    body: `时间到了: ${new Date().toLocaleTimeString()}`,
+                                });
+                            });
+                        } else {
+                            alert("失败啦!");
+                        }
 
-        deleteSelectedButton.addEventListener("click", () => {
-          const remainingTasks = tasks.filter((task) => !task.selected);
-          tasks.length = 0;
-          tasks.push(...remainingTasks);
-          saveTasks();
-          renderTasks();
-        });
-
-        if (Notification.permission !== "granted") {
-          Notification.requestPermission();
-        }
-
-        setInterval(() => {
-          const now = new Date();
-          tasks.forEach((task) => {
-            if (task.reminderTime && new Date(task.reminderTime) <= now) {
-              alert(`提醒: ${task.name}`);
-              if ("Notification" in window && navigator.serviceWorker) {
-                alert(`提醒: ${task.name}`);
-                navigator.serviceWorker.getRegistration().then(function (reg) {
-                  reg.showNotification(`提醒: ${task.name}`, {
-                    body: `时间到了: ${new Date().toLocaleTimeString()}`,
-                  });
+                        task.reminderTime = ""; // 清除提醒时间，防止重复提醒
+                        saveTasks();
+                        renderTasks();
+                    }
                 });
-              } else {
-                alert("失败啦!");
-              }
+            }, 60000);
 
-              task.reminderTime = ""; // 清除提醒时间，防止重复提醒
-              saveTasks();
-              renderTasks();
-            }
-          });
-        }, 60000);
-
-        renderTasks();
-      });
+            // 在页面加载时渲染任务列表
+            renderTasks();
+        });
     </script>
-  </body>
+</body>
 </html>
