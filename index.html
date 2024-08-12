@@ -333,10 +333,8 @@
               if ("Notification" in window && navigator.serviceWorker) {
                 alert(`提醒: ${task.name}`);
                 navigator.serviceWorker.getRegistration().then(function (reg) {
-                  alert(`提醒: ${task.name}`);
                   reg.showNotification(`提醒: ${task.name}`, {
                     body: `时间到了: ${new Date().toLocaleTimeString()}`,
-                    icon: "https://img.icons8.com/material-outlined/24/000000/alarm.png",
                   });
                 });
               } else {
@@ -352,46 +350,6 @@
 
         renderTasks();
       });
-      navigator.serviceWorker.getRegistration().then(function (reg) {
-        if (!reg) {
-          alert("Service Worker 注册未找到");
-          return;
-        }
-
-        if (Notification.permission !== "granted") {
-          Notification.requestPermission().then((permission) => {
-            if (permission === "granted") {
-              reg.showNotification(`提醒: ${task.name}`, {
-                body: `时间到了: ${new Date().toLocaleTimeString()}`,
-                icon: "https://img.icons8.com/material-outlined/24/000000/alarm.png",
-              });
-            } else {
-              alert("通知权限未授予");
-            }
-          });
-        } else {
-          reg.showNotification(`提醒: ${task.name}`, {
-            body: `时间到了: ${new Date().toLocaleTimeString()}`,
-            icon: "https://img.icons8.com/material-outlined/24/000000/alarm.png",
-          });
-        }
-      });
-
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("/sw.js").then(
-            function (registration) {
-              console.log(
-                "Service Worker 注册成功，作用域:",
-                registration.scope
-              );
-            },
-            function (err) {
-              console.log("Service Worker 注册失败:", err);
-            }
-          );
-        });
-      }
     </script>
   </body>
 </html>
