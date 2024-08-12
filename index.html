@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TODO LIST</title>
     <style>
         body {
@@ -130,132 +130,97 @@
         }
 
         .reminder-time {
-            font-size: 10px;
+            font-size: 12px;
             color: #888;
+            margin-left: 10px;
         }
     </style>
-    <!-- 引入 Flatpickr CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
+
+    <!-- 内嵌 manifest.json -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIlRPRE8gTElTVCIsInNob3J0X25hbWUiOiAiVE9ETyIsImRlc2NyaXB0aW9uIjogIkEgc2ltcGxlIHRvZG8gbGlzdCBhcHBsaWNhdGlvbiIsInN0YXJ0X3VybCI6ICIvaW5kZXguaHRtbCIsImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsInRoZW1lX2NvbG9yIjogIiMzZjUxYjUiLCJpY29ucyI6IFt7InNyYyI6ICIvY29uZmlnL2ljb25zL2ljb24tMTkyeDE5Mi5wbmciLCAic2l6ZXMiOiAiMTkyeDE5MiIsICJ0eXBlIjogImltYWdlL3BuZyJ9LCB7InNyYyI6ICIvY29uZmlnL2ljb25zL2ljb24tNTEyeDUxMi5wbmciLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3BuZyJ9XX0=">
 </head>
 <body>
+
     <h1>TODO LIST</h1>
     <div id="todo-list">
-        <input type="text" id="new-task" placeholder="添加一个计划..." />
+        <input type="text" id="new-task" placeholder="添加一个计划...">
         <ul id="tasks"></ul>
     </div>
     <button id="delete-selected">删除选中任务</button>
 
-    <!-- 引入 Flatpickr JS -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", (event) => {
-            const taskInput = document.getElementById("new-task");
-            const tasksList = document.getElementById("tasks");
-            const deleteSelectedButton = document.getElementById("delete-selected");
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const taskInput = document.getElementById('new-task');
+            const tasksList = document.getElementById('tasks');
+            const deleteSelectedButton = document.getElementById('delete-selected');
 
             // 从 localStorage 加载任务列表
-            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
             const saveTasks = () => {
-                localStorage.setItem("tasks", JSON.stringify(tasks));
-            };
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
 
             const renderTasks = () => {
-                tasksList.innerHTML = "";
+                tasksList.innerHTML = '';
                 let selectedCount = 0;
 
                 tasks.forEach((task, index) => {
-                    const li = document.createElement("li");
+                    const li = document.createElement('li');
 
-                    const taskInfoDiv = document.createElement("div");
-                    taskInfoDiv.className = "task-info";
+                    const taskInfoDiv = document.createElement('div');
+                    taskInfoDiv.className = 'task-info';
 
-                    const taskNameDiv = document.createElement("div");
+                    const taskNameDiv = document.createElement('div');
                     taskNameDiv.textContent = task.name;
-                    taskNameDiv.style.cursor = "pointer";
 
-                    taskNameDiv.addEventListener("click", () => {
-                        const input = document.createElement("input");
-                        input.type = "text";
-                        input.value = task.name;
-
-                        taskNameDiv.replaceWith(input);
-                        input.focus();
-
-                        const saveEdit = () => {
-                            const newValue = input.value.trim();
-                            if (newValue === "") {
-                                tasks.splice(index, 1);
-                            } else {
-                                task.name = newValue;
-                            }
-                            saveTasks();
-                            renderTasks();
-                        };
-
-                        input.addEventListener("keypress", (e) => {
-                            if (e.key === "Enter") {
-                                saveEdit();
-                            }
-                        });
-
-                        input.addEventListener("blur", saveEdit);
-                    });
-
-                    const timestamp = document.createElement("span");
-                    timestamp.className = "timestamp";
+                    const timestamp = document.createElement('span');
+                    timestamp.className = 'timestamp';
                     timestamp.textContent = task.time;
                     taskInfoDiv.appendChild(taskNameDiv);
                     taskInfoDiv.appendChild(timestamp);
 
-                    const reminderButton = document.createElement("button");
-                    reminderButton.className = "reminder-button";
+                    // 闹钟按钮
+                    const reminderButton = document.createElement('button');
+                    reminderButton.className = 'reminder-button';
                     reminderButton.innerHTML = `<img src="https://img.icons8.com/material-outlined/24/000000/alarm.png" alt="提醒">`;
                     if (task.reminderTime) {
-                        reminderButton.classList.add("active");
+                        reminderButton.classList.add('active');
                     }
-
                     reminderButton.onclick = () => {
-                        const picker = flatpickr(reminderButton, {
-                            enableTime: true,
-                            dateFormat: "Y-m-d H:i",
-                            defaultDate: task.reminderTime || new Date(),
-                            onClose: (selectedDates) => {
-                                if (selectedDates.length > 0) {
-                                    task.reminderTime = selectedDates[0].toISOString();
-                                    reminderButton.classList.add("active");
-                                    saveTasks();
-                                    renderTasks();
-                                }
-                            },
-                        });
-                        picker.open();
+                        const reminderTimePicker = document.createElement('input');
+                        reminderTimePicker.type = 'datetime-local';
+                        reminderTimePicker.value = task.reminderTime || '';
+
+                        reminderTimePicker.onchange = () => {
+                            task.reminderTime = reminderTimePicker.value;
+                            reminderButton.classList.add('active');
+                            saveTasks();
+                            renderTasks();
+                        };
+
+                        reminderTimePicker.click();
                     };
 
-                    const reminderTimeText = document.createElement("span");
-                    reminderTimeText.className = "reminder-time";
+                    const reminderTimeText = document.createElement('span');
+                    reminderTimeText.className = 'reminder-time';
                     if (task.reminderTime) {
-                        reminderTimeText.textContent = new Date(
-                            task.reminderTime
-                        ).toLocaleString();
+                        reminderTimeText.textContent = new Date(task.reminderTime).toLocaleString();
                     }
                     taskInfoDiv.appendChild(reminderTimeText);
 
-                    const deleteButton = document.createElement("button");
-                    deleteButton.textContent = "删除";
-                    deleteButton.className = "delete";
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = '删除';
+                    deleteButton.className = 'delete';
                     deleteButton.onclick = () => {
                         tasks.splice(index, 1);
                         saveTasks();
                         renderTasks();
                     };
 
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.className = "task-checkbox";
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.className = 'task-checkbox';
                     checkbox.checked = task.selected;
                     checkbox.onclick = (e) => {
                         task.selected = e.target.checked;
@@ -272,84 +237,173 @@
                     li.appendChild(deleteButton);
                     tasksList.appendChild(li);
 
+                    // 添加左滑删除的功能
                     let startX;
 
-                    li.addEventListener("touchstart", (e) => {
+                    li.addEventListener('touchstart', (e) => {
                         startX = e.touches[0].clientX;
                     });
 
-                    li.addEventListener("touchmove", (e) => {
+                    li.addEventListener('touchmove', (e) => {
                         const moveX = e.touches[0].clientX;
                         const diffX = startX - moveX;
 
                         if (diffX > 50) {
-                            li.classList.add("show-delete");
+                            li.classList.add('show-delete');
                         } else {
-                            li.classList.remove("show-delete");
+                            li.classList.remove('show-delete');
                         }
                     });
                 });
 
+                // 根据选中的任务数量显示或隐藏批量删除按钮
                 if (selectedCount > 0) {
-                    deleteSelectedButton.style.display = "block";
+                    deleteSelectedButton.style.display = 'block';
                 } else {
-                    deleteSelectedButton.style.display = "none";
+                    deleteSelectedButton.style.display = 'none';
                 }
             };
 
-            taskInput.addEventListener("keypress", (e) => {
-                if (e.key === "Enter" && taskInput.value.trim() !== "") {
+            // 添加任务
+            
+  taskInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && taskInput.value.trim() !== '') {
                     const newTask = {
                         name: taskInput.value.trim(),
                         time: new Date().toLocaleString(),
                         selected: false,
-                        reminderTime: "",
+                        reminderTime: ''
                     };
                     tasks.push(newTask);
-                    taskInput.value = "";
+                    taskInput.value = '';
                     saveTasks();
                     renderTasks();
                 }
             });
 
-            deleteSelectedButton.addEventListener("click", () => {
-                const remainingTasks = tasks.filter((task) => !task.selected);
+            // 批量删除任务
+            deleteSelectedButton.addEventListener('click', () => {
+                const remainingTasks = tasks.filter(task => !task.selected);
                 tasks.length = 0;
                 tasks.push(...remainingTasks);
                 saveTasks();
                 renderTasks();
             });
 
-            if (Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-
+            // 定时检查提醒
             setInterval(() => {
                 const now = new Date();
                 tasks.forEach((task) => {
                     if (task.reminderTime && new Date(task.reminderTime) <= now) {
-                        alert(`提醒: ${task.name}`);
+                        // 使用浏览器通知提醒
                         if ("Notification" in window && navigator.serviceWorker) {
-                            alert(`提醒: ${task.name}`);
-                            navigator.serviceWorker.getRegistration().then(function (reg) {
+                            navigator.serviceWorker.getRegistration().then(function(reg) {
                                 reg.showNotification(`提醒: ${task.name}`, {
                                     body: `时间到了: ${new Date().toLocaleTimeString()}`,
+                                    icon: 'https://img.icons8.com/material-outlined/24/000000/alarm.png'
                                 });
                             });
                         } else {
-                            alert("失败啦!");
+                            alert(`提醒: ${task.name}`);
                         }
 
-                        task.reminderTime = ""; // 清除提醒时间，防止重复提醒
+                        task.reminderTime = ''; // 清除提醒时间，防止重复提醒
                         saveTasks();
                         renderTasks();
                     }
                 });
-            }, 60000);
+            }, 60000); // 每分钟检查一次
 
-            // 在页面加载时渲染任务列表
             renderTasks();
         });
+
+        // 安装PWA
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // 阻止自动弹出安装对话框
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // 显示提示用户安装的UI
+            // 例如：显示一个安装按钮
+            const installButton = document.createElement('button');
+            installButton.textContent = '安装应用';
+            installButton.style.position = 'fixed';
+            installButton.style.bottom = '20px';
+            installButton.style.right = '20px';
+            installButton.style.padding = '10px 20px';
+            installButton.style.backgroundColor = '#3f51b5';
+            installButton.style.color = '#fff';
+            installButton.style.border = 'none';
+            installButton.style.borderRadius = '4px';
+            installButton.style.cursor = 'pointer';
+            document.body.appendChild(installButton);
+
+            installButton.addEventListener('click', (e) => {
+                // 隐藏安装按钮
+                installButton.style.display = 'none';
+
+                // 显示安装对话框
+                deferredPrompt.prompt();
+
+                // 监听用户的选择结果
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+        });
     </script>
+
+    <!-- 服务工作者 (Service Worker) 内嵌代码 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+
+            navigator.serviceWorker.addEventListener('message', event => {
+                console.log('Service Worker Message:', event.data);
+            });
+        }
+
+        // 定义服务工作者的内容
+        const swCode = `
+            self.addEventListener('install', event => {
+                console.log('Service Worker installing.');
+                // 可执行缓存等操作
+            });
+
+            self.addEventListener('activate', event => {
+                console.log('Service Worker activating.');
+                // 可执行清理旧缓存等操作
+            });
+
+            self.addEventListener('fetch', event => {
+                // 你可以通过此拦截请求并自定义响应（例如使用缓存）
+                console.log('Fetching:', event.request.url);
+            });
+        `;
+
+        const blob = new Blob([swCode], { type: 'application/javascript' });
+        const swBlobUrl = URL.createObjectURL(blob);
+
+        // 重新注册服务工作者，使用内嵌的Blob URL
+        navigator.serviceWorker.register(swBlobUrl).then(function(registration) {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    </script>
+
 </body>
 </html>
