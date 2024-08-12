@@ -143,7 +143,6 @@
       <ul id="tasks"></ul>
     </div>
     <button id="delete-selected">删除选中任务</button>
-
     <script>
       document.addEventListener("DOMContentLoaded", (event) => {
         const taskInput = document.getElementById("new-task");
@@ -315,6 +314,10 @@
           renderTasks();
         });
 
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission();
+        }
+
         setInterval(() => {
           const now = new Date();
           tasks.forEach((task) => {
@@ -340,7 +343,6 @@
         renderTasks();
       });
 
-      // 注册 Service Worker
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", function () {
           navigator.serviceWorker.register("/sw.js").then(
