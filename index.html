@@ -329,15 +329,18 @@
           const now = new Date();
           tasks.forEach((task) => {
             if (task.reminderTime && new Date(task.reminderTime) <= now) {
+              alert(`提醒: ${task.name}`);
               if ("Notification" in window && navigator.serviceWorker) {
+                alert(`提醒: ${task.name}`);
                 navigator.serviceWorker.getRegistration().then(function (reg) {
+                  alert(`提醒: ${task.name}`);
                   reg.showNotification(`提醒: ${task.name}`, {
                     body: `时间到了: ${new Date().toLocaleTimeString()}`,
                     icon: "https://img.icons8.com/material-outlined/24/000000/alarm.png",
                   });
                 });
               } else {
-                alert(`提醒: ${task.name}`);
+                alert("失败啦!");
               }
 
               task.reminderTime = ""; // 清除提醒时间，防止重复提醒
@@ -348,6 +351,30 @@
         }, 60000);
 
         renderTasks();
+      });
+      navigator.serviceWorker.getRegistration().then(function (reg) {
+        if (!reg) {
+          alert("Service Worker 注册未找到");
+          return;
+        }
+
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+              reg.showNotification(`提醒: ${task.name}`, {
+                body: `时间到了: ${new Date().toLocaleTimeString()}`,
+                icon: "https://img.icons8.com/material-outlined/24/000000/alarm.png",
+              });
+            } else {
+              alert("通知权限未授予");
+            }
+          });
+        } else {
+          reg.showNotification(`提醒: ${task.name}`, {
+            body: `时间到了: ${new Date().toLocaleTimeString()}`,
+            icon: "https://img.icons8.com/material-outlined/24/000000/alarm.png",
+          });
+        }
       });
 
       if ("serviceWorker" in navigator) {
