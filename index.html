@@ -135,6 +135,11 @@
         margin-left: 10px;
       }
     </style>
+    <!-- 引入 Flatpickr CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
   </head>
   <body>
     <h1>TODO LIST</h1>
@@ -143,6 +148,9 @@
       <ul id="tasks"></ul>
     </div>
     <button id="delete-selected">删除选中任务</button>
+
+    <!-- 引入 Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
       document.addEventListener("DOMContentLoaded", (event) => {
         const taskInput = document.getElementById("new-task");
@@ -210,23 +218,23 @@
             if (task.reminderTime) {
               reminderButton.classList.add("active");
             }
+
             reminderButton.onclick = () => {
-              const reminderTimePicker = document.createElement("input");
-              reminderTimePicker.type = "datetime-local";
-              reminderTimePicker.value = task.reminderTime || "";
-
-              reminderTimePicker.onchange = () => {
-                task.reminderTime = reminderTimePicker.value;
-                reminderButton.classList.add("active");
-                saveTasks();
-                renderTasks();
-              };
-
-              // 触发datetime-local输入框
-              reminderTimePicker.style.display = "none"; // 隐藏输入框本身
-              document.body.appendChild(reminderTimePicker); // 添加到DOM中
-              reminderTimePicker.click(); // 模拟点击事件，打开时间选择器
-              document.body.removeChild(reminderTimePicker); // 移除输入框
+              // 创建时间选择器
+              const picker = flatpickr(reminderButton, {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                defaultDate: task.reminderTime || new Date(),
+                onClose: (selectedDates) => {
+                  if (selectedDates.length > 0) {
+                    task.reminderTime = selectedDates[0].toISOString();
+                    reminderButton.classList.add("active");
+                    saveTasks();
+                    renderTasks();
+                  }
+                },
+              });
+              picker.open();
             };
 
             const reminderTimeText = document.createElement("span");
